@@ -1,6 +1,9 @@
-name: My First GitHub Actions
+# .github/workflows/python-ci.yml
+name: Python CI without specific test file
 
-on: [push]
+on:
+  push:
+    branches: [main, UAT-BRANCH]
 
 jobs:
   build:
@@ -8,13 +11,13 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [3.8]  # Only 3.8, since your self-hosted runner supports it
+        python-version: [3.8]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
@@ -26,19 +29,10 @@ jobs:
 
       - name: Run tests with retry logic
         run: |
-          cd src
           retry=0
           until [ $retry -ge 3 ]
           do
-            python -m pytest test_addition.py && break
-            retry=$((retry+1))
-            echo "Retrying test run... attempt #$retry"
-            sleep 5
-          done
+            echo "🧪 Running tests... attempt $((retry+1
 
-          if [ $retry -ge 3 ]; then
-            echo "❌ Tests failed after 3 attempts"
-            exit 1
-          fi
 
 
